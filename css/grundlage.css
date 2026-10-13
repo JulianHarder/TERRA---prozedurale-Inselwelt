@@ -105,6 +105,15 @@ input[type="range"] { width: 100%; accent-color: var(--farbe-akzent); }
   gap: var(--abstand-4);
   flex-wrap: wrap;
 }
+/* Urheberzeile: schiebt sich ans rechte Ende der Fusszeile. Bei schmalen
+   Fenstern bricht die Zeile um, dann steht sie unten links - 'margin-left:
+   auto' wirkt nur, solange in der Zeile noch Platz ist. */
+.fuss-marke {
+  margin-left: auto;
+  color: var(--farbe-text-leise);
+  letter-spacing: 0.4px;
+}
+
 .fuss kbd {
   font-family: var(--schrift-fest);
   background: var(--farbe-flaeche-hoch);
