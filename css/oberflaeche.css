@@ -1,0 +1,197 @@
+/* Seitenleiste, Kennzahlen, Legende, Werkstatt- und Hilfefenster. */
+.seitenleiste {
+  flex: 0 0 var(--seitenleiste-breite);
+  background: var(--farbe-flaeche);
+  border-left: 1px solid var(--farbe-rand);
+  padding: var(--abstand-3);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--abstand-3);
+}
+
+.block {
+  background: var(--farbe-flaeche-hoch);
+  border: 1px solid var(--farbe-rand);
+  border-radius: var(--radius);
+  padding: var(--abstand-3);
+}
+.block h2 {
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--farbe-text-still);
+  margin-bottom: var(--abstand-2);
+}
+
+/* Kennzahlen zur Welt */
+.balken {
+  height: 7px;
+  background: #0b0f14;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--farbe-rand);
+}
+.balken span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--farbe-akzent-dunkel), var(--farbe-akzent));
+  transition: width var(--zeit-mittel);
+}
+.kennzahl {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--abstand-2);
+  font-size: var(--text-klein);
+  color: var(--farbe-text-leise);
+}
+.kennzahl b { color: var(--farbe-text); font-variant-numeric: tabular-nums; }
+
+/* Minikarte */
+#minikarte {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-klein);
+  border: 1px solid var(--farbe-rand);
+  image-rendering: pixelated;
+  cursor: default;
+}
+
+/* Legende */
+#legende {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 8px;
+  font-size: 11px;
+  color: var(--farbe-text-leise);
+}
+#legende li { display: flex; align-items: center; gap: 6px; }
+#legende i {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+/* Fenster (Werkstatt, Hilfe) */
+.fenster {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 10, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: var(--abstand-4);
+}
+.fenster[hidden] { display: none; }
+
+.fenster-inhalt {
+  background: var(--farbe-flaeche);
+  border: 1px solid var(--farbe-rand-hell);
+  border-radius: var(--radius);
+  box-shadow: var(--schatten);
+  max-width: 980px;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: var(--abstand-4);
+}
+.fenster-kopf {
+  display: flex;
+  align-items: center;
+  gap: var(--abstand-3);
+  margin-bottom: var(--abstand-3);
+}
+.fenster-kopf h2 { font-size: var(--text-gross); letter-spacing: 1px; }
+.fenster-kopf p { margin: 0; color: var(--farbe-text-leise); font-size: var(--text-klein); }
+.fenster-kopf button { margin-left: auto; }
+
+/* Werkstatt: Bilderreihe der Zwischenschritte */
+.schritte {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--abstand-3);
+  margin-bottom: var(--abstand-4);
+}
+.schritte figure {
+  margin: 0;
+  background: var(--farbe-flaeche-hoch);
+  border: 1px solid var(--farbe-rand);
+  border-radius: var(--radius-klein);
+  padding: var(--abstand-2);
+}
+.schritte canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 3px;
+  image-rendering: pixelated;
+  background: #000;
+}
+.schritte figcaption {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--farbe-text-leise);
+  line-height: 1.35;
+}
+.schritte figcaption b { display: block; color: var(--farbe-text); font-size: var(--text-klein); }
+
+/* Werkstatt: Regler */
+.regler {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--abstand-3);
+}
+.regler label {
+  display: block;
+  font-size: var(--text-klein);
+  color: var(--farbe-text-leise);
+}
+.regler label b {
+  display: flex;
+  justify-content: space-between;
+  color: var(--farbe-text);
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+.regler label b i {
+  font-style: normal;
+  color: var(--farbe-akzent);
+  font-family: var(--schrift-fest);
+}
+.regler-fuss {
+  margin-top: var(--abstand-4);
+  display: flex;
+  gap: var(--abstand-2);
+  align-items: center;
+}
+.regler-fuss .hinweis { color: var(--farbe-text-still); font-size: 11px; margin-left: auto; }
+
+.schalter { display: flex; align-items: center; gap: 6px; font-size: var(--text-klein); }
+
+/* Hilfe */
+.tasten { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.tasten li { display: flex; gap: var(--abstand-3); align-items: baseline; font-size: var(--text-normal); }
+.tasten li span:first-child { flex: 0 0 150px; }
+.tasten kbd {
+  font-family: var(--schrift-fest);
+  background: var(--farbe-flaeche-hoch);
+  border: 1px solid var(--farbe-rand);
+  border-radius: 3px;
+  padding: 2px 6px;
+}
+.hilfe-text { color: var(--farbe-text-leise); line-height: 1.55; }
+.hilfe-text code {
+  font-family: var(--schrift-fest);
+  background: var(--farbe-flaeche-hoch);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--farbe-warm);
+}

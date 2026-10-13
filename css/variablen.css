@@ -1,0 +1,46 @@
+/* Das Design-Stellrad. Farben, Abstände und Zeiten nur hier ändern. */
+:root {
+  /* Oberfläche */
+  --farbe-grund:        #0e1116;
+  --farbe-flaeche:      #151a21;
+  --farbe-flaeche-hoch: #1d242e;
+  --farbe-rand:         #28323f;
+  --farbe-rand-hell:    #3a4757;
+
+  /* Schrift */
+  --farbe-text:       #e6edf3;
+  --farbe-text-leise: #93a1b2;
+  --farbe-text-still: #697789;
+
+  /* Akzente */
+  --farbe-akzent:      #5eb0ef;
+  --farbe-akzent-dunkel:#1f5e8f;
+  --farbe-warm:        #e0b872;
+  --farbe-gut:         #7ec699;
+
+  /* Karte */
+  --farbe-kartenrand:  #0a0d12;
+
+  /* Maße */
+  --abstand-1: 4px;
+  --abstand-2: 8px;
+  --abstand-3: 12px;
+  --abstand-4: 18px;
+  --abstand-5: 26px;
+  --radius:    8px;
+  --radius-klein: 5px;
+
+  --schrift: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --schrift-fest: "Cascadia Mono", "DejaVu Sans Mono", Consolas, monospace;
+  --text-klein: 12px;
+  --text-normal: 14px;
+  --text-gross: 17px;
+
+  --seitenleiste-breite: 290px;
+  --kopf-hoehe: 54px;
+
+  --zeit-kurz: 120ms;
+  --zeit-mittel: 260ms;
+
+  --schatten: 0 8px 28px rgba(0, 0, 0, 0.45);
+}

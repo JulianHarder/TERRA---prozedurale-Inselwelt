@@ -1,0 +1,146 @@
+/* Seitengerüst: Reset, Schrift, Grundzustand der Bedienelemente. */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--farbe-grund);
+  color: var(--farbe-text);
+  font-family: var(--schrift);
+  font-size: var(--text-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 600; }
+
+main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+button, input {
+  font-family: inherit;
+  font-size: var(--text-normal);
+  color: var(--farbe-text);
+}
+
+button {
+  background: var(--farbe-flaeche-hoch);
+  border: 1px solid var(--farbe-rand);
+  border-radius: var(--radius-klein);
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background var(--zeit-kurz), border-color var(--zeit-kurz);
+}
+
+button:hover { background: #253040; border-color: var(--farbe-rand-hell); }
+button:active { transform: translateY(1px); }
+
+button.wichtig {
+  background: var(--farbe-akzent-dunkel);
+  border-color: #2b7cb8;
+}
+button.wichtig:hover { background: #26709f; }
+
+input[type="text"] {
+  background: #0b0f14;
+  border: 1px solid var(--farbe-rand);
+  border-radius: var(--radius-klein);
+  padding: 6px 10px;
+  min-width: 150px;
+}
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--farbe-akzent);
+}
+
+input[type="range"] { width: 100%; accent-color: var(--farbe-akzent); }
+
+/* Kopfzeile */
+.kopf {
+  height: var(--kopf-hoehe);
+  flex: 0 0 var(--kopf-hoehe);
+  display: flex;
+  align-items: center;
+  gap: var(--abstand-4);
+  padding: 0 var(--abstand-4);
+  background: var(--farbe-flaeche);
+  border-bottom: 1px solid var(--farbe-rand);
+}
+
+.marke {
+  font-size: var(--text-gross);
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.marke span {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--farbe-text-still);
+  text-transform: uppercase;
+}
+
+.seed-form { display: flex; align-items: center; gap: var(--abstand-2); }
+.seed-form label { color: var(--farbe-text-leise); font-size: var(--text-klein); }
+.kopf-werkzeuge { margin-left: auto; display: flex; gap: var(--abstand-2); }
+
+/* Fußzeile mit den Tastenkürzeln */
+.fuss {
+  flex: 0 0 auto;
+  padding: 6px var(--abstand-4);
+  background: var(--farbe-flaeche);
+  border-top: 1px solid var(--farbe-rand);
+  color: var(--farbe-text-still);
+  font-size: var(--text-klein);
+  display: flex;
+  gap: var(--abstand-4);
+  flex-wrap: wrap;
+}
+.fuss kbd {
+  font-family: var(--schrift-fest);
+  background: var(--farbe-flaeche-hoch);
+  border: 1px solid var(--farbe-rand);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--farbe-text-leise);
+}
+
+/* Schmale Fenster: die Kopfzeile darf umbrechen, statt Knoepfe abzuschneiden. */
+@media (max-width: 1080px) {
+  .kopf {
+    height: auto;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: var(--abstand-3);
+    padding: var(--abstand-2) var(--abstand-3);
+  }
+  .kopf-werkzeuge { margin-left: 0; }
+  .seed-form input[type="text"] { min-width: 110px; }
+}
+
+@media (max-width: 860px) {
+  :root { --seitenleiste-breite: 230px; }
+  .marke { font-size: var(--text-normal); }
+  .fuss { font-size: 11px; gap: var(--abstand-2); }
+}
+
+/* Sehr schmal (Hochformat): Seitenleiste unter die Karte legen. */
+@media (max-width: 680px) {
+  main { flex-direction: column; }
+  .seitenleiste {
+    flex: 0 0 auto;
+    max-height: 45%;
+    border-left: none;
+    border-top: 1px solid var(--farbe-rand);
+  }
+  .karte-bereich { flex: 1 1 auto; min-height: 240px; }
+}
