@@ -29,7 +29,7 @@ TERRA.Speicher = (function () {
         version: 2,
         seed: z.welt.seed,
         einstellungen: z.einstellungen,
-        blick: { x: z.entdecker.x, y: z.entdecker.y }
+        blick: { x: z.blick.x, y: z.blick.y }
       }));
       return true;
     } catch (fehler) {
@@ -54,8 +54,8 @@ TERRA.Speicher = (function () {
   function anwenden(z, stand) {
     if (!stand.blick) return;
     var N = z.welt.groesse;
-    z.entdecker.x = Math.max(0, Math.min(N - 0.01, stand.blick.x));
-    z.entdecker.y = Math.max(0, Math.min(N - 0.01, stand.blick.y));
+    z.blick.x = Math.max(0, Math.min(N, stand.blick.x));
+    z.blick.y = Math.max(0, Math.min(N, stand.blick.y));
   }
 
   function loeschen() {

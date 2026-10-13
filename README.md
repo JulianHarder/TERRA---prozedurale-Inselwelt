@@ -21,12 +21,13 @@ Netz: keine Bibliothek, kein CDN, keine Webfonts. Alle Skripte sind als normale
 
 ## Bedienung
 
-| Taste | Wirkung |
+| Eingabe | Wirkung |
 | --- | --- |
-| Mausrad, `+` `−` | zoomen |
+| Mausrad | zoomen, auf die Stelle unter dem Zeiger |
+| `+` `−` | zoomen, auf die Bildmitte |
 | `0` | ganze Welt einpassen |
-| `W` `A` `S` `D` oder Pfeile | Ausschnitt verschieben |
-| Klick auf die Karte | dorthin fahren |
+| Maus gedrückt halten und ziehen | Karte verschieben |
+| `W` `A` `S` `D` oder Pfeile | Karte verschieben |
 | `B` | Regionsnamen an- und ausschalten |
 | `M` | Minikarte ein- und ausblenden |
 | `E` | Werkstatt – zeigt, wie die Welt entsteht |
@@ -77,16 +78,16 @@ js/
   daten/            Biome, Silben, Texte – hier wird justiert, nicht im Code
   kern/             Zufall, Rauschen, Zustand
   welt/             Hoehenkarte, Feuchtigkeit, Biome, Fluesse, Regionen, Namen, Welt
-  zeichnen/         GelaendeEbene, Beschriftung, FigurEbene, Ansicht (Kamera), Minikarte
-  spiel/            Entdecker (Bewegung des Ausschnitts), Speicher
+  zeichnen/         GelaendeEbene, Beschriftung, Ansicht (Kamera), Minikarte
+  spiel/            Blick (Verschieben des Ausschnitts), Speicher
   ui/               Kopfzeile, Seitenleiste, Werkstatt, Tastatur
   main.js           Einstieg und Schleife
 ```
 
 Zwei Canvas-Ebenen liegen übereinander: **Gelände** – nur bei einer neuen Welt
 gezeichnet und danach nur noch als fertiges Bild verschoben – und darüber die
-**Namen und der Pfeil**, die jedes Bild neu kommen. Pro Bild bleiben dadurch
-ein `drawImage` und ein paar Textzeilen übrig.
+**Namen**, die jedes Bild neu kommen. Pro Bild bleiben dadurch ein `drawImage`
+und ein paar Textzeilen übrig.
 
 Jede Datei hängt sich an das globale Objekt `window.TERRA`. Kein
 `import`/`export` – damit die Seite über `file://` per Doppelklick läuft, denn
@@ -118,3 +119,7 @@ dem Handy im selben Netz zu öffnen):
 ```bash
 python3 -m http.server 8779
 ```
+
+---
+
+Mit Unterstützung von KI erstellt.

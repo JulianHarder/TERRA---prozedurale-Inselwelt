@@ -1,4 +1,4 @@
-/* Der Canvas-Stapel: Gelände unten, Namen und Pfeil darüber. */
+/* Der Canvas-Stapel: Gelände unten, Namen darüber. */
 .karte-bereich {
   flex: 1;
   min-width: 0;
@@ -11,8 +11,12 @@
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  cursor: crosshair;
+  cursor: grab;
+  /* Ohne das scrollt ein Finger auf dem Tablet die Seite, statt zu ziehen. */
+  touch-action: none;
 }
+
+.karte-rahmen.zieht { cursor: grabbing; }
 
 .karte-rahmen canvas {
   position: absolute;

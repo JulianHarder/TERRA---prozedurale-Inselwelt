@@ -62,20 +62,14 @@ TERRA.Biome = (function () {
     return karte;
   }
 
-  // Ist dieses Feld Land? (Wasser hat Tempo 0 - ausser Fluessen, die man queren kann.)
   function istWasser(biomNummer) {
     return !!daten().info(biomNummer).wasser;
-  }
-
-  function tempo(biomNummer) {
-    return daten().info(biomNummer).tempo;
   }
 
   return {
     fuer: fuer,
     spalte: spalte,
     karteBauen: karteBauen,
-    istWasser: istWasser,
-    tempo: tempo
+    istWasser: istWasser
   };
 })();

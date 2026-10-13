@@ -6,12 +6,19 @@ ergibt immer dieselbe Welt. Der vollständige Plan steht in `TERRA-Plan.md`.
 
 Die Karte ist immer vollständig sichtbar und wird beim Laden ins Fenster
 eingepasst. Regionsnamen stehen direkt auf der Karte (`B` blendet sie aus),
-gefiltert nach ihrer Größe auf dem Bildschirm.
+gefiltert nach ihrer Größe auf dem Bildschirm. Überschneiden sich zwei
+Beschriftungen, bleiben beide stehen – der Name des größeren Gebiets wird
+zuletzt geschrieben und liegt damit oben.
 
 **Es gibt bewusst keinen Nebel, keinen Fortschritt und kein Logbuch.** Das war
 in einer früheren Fassung drin und wurde auf Julians Wunsch vollständig
 entfernt – nicht abgeschaltet, sondern gelöscht. Nicht wieder einbauen, außer
 er fragt ausdrücklich danach.
+
+**Es gibt auch keine Figur auf der Karte.** Kein Entdecker, kein Pfeil, kein
+Laufziel und kein Geländetempo – ebenfalls auf Julians Wunsch gelöscht. Die
+Karte wird mit gedrückter Maustaste gezogen (`js/spiel/Blick.js`), die
+Richtungstasten verschieben denselben Punkt.
 
 ## Stack
 - Vanilla JavaScript, Canvas 2D, kein Framework, kein TypeScript, kein Build-Tool
@@ -34,6 +41,11 @@ er fragt ausdrücklich danach.
 - Biom-Schwellwerte, Farben, Silben und Texte liegen in `js/daten/`, nicht im Code.
 - Gelände-Ebene nur bei neuer Welt neu zeichnen, nie pro Bild – danach wird
   das fertige Bild nur noch per `drawImage` verschoben.
+- **Ein Bildpunkt je Feld, und das bleibt so.** Eine Fassung mit 1024 x 1024
+  Bildpunkten (Höhe und Feuchte vermittelt, Farbe pro Punkt neu bestimmt,
+  Flüsse als gezeichnete Linien) war fertig und hat Julian nicht gefallen –
+  sie wurde vollständig gelöscht. Nicht wieder einbauen, außer er fragt
+  ausdrücklich danach.
 - Keine Datei über 500 Zeilen. Ab ca. 350 Zeilen aufteilen. Prüfen mit:
   `find js css -name "*.js" -o -name "*.css" | xargs wc -l | sort -n`
 - Nur an der aktuellen Etappe arbeiten, nicht an mehreren gleichzeitig.

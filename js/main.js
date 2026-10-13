@@ -32,14 +32,14 @@ TERRA.Haupt = (function () {
       png: function () { TERRA.Kopfzeile.pngSpeichern(z); },
       link: function () { TERRA.Kopfzeile.linkKopieren(z); },
       namen: namenUmschalten,
-      zoom: function (stufen) { TERRA.Ansicht.zoomen(z, stufen); },
+      zoom: function (stufen, punkt) { TERRA.Ansicht.zoomen(z, stufen, punkt); },
       einpassen: function () { TERRA.Ansicht.einpassen(z); },
       schliessen: function () {
         TERRA.Werkstatt.schliessen();
         document.getElementById('fenster-hilfe').hidden = true;
       },
       seedFeld: function () { document.getElementById('seed-feld').focus(); },
-      klick: function (feld) { TERRA.Entdecker.zielSetzen(z, feld); }
+      ziehen: function (dx, dy) { TERRA.Blick.ziehen(z, dx, dy); }
     });
 
     document.getElementById('knopf-namen').addEventListener('click', namenUmschalten);
@@ -137,7 +137,7 @@ TERRA.Haupt = (function () {
     if (dt > 0.1) dt = 0.1;      // nach einem Tabwechsel nicht durch die Welt springen
 
     if (z.welt) {
-      TERRA.Entdecker.schritt(z, dt, TERRA.Tastatur.richtung());
+      TERRA.Blick.tasten(z, dt, TERRA.Tastatur.richtung());
       TERRA.Ansicht.zeichnen(z);
       TERRA.Minikarte.zeichnen(z);
 

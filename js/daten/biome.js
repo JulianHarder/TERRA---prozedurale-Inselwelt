@@ -14,24 +14,24 @@ TERRA.daten.biome = (function () {
   'use strict';
 
   var liste = {
-    tiefesMeer:    { name: 'Tiefes Meer',    farbe: '#102f52', tempo: 0,    wasser: true },
-    meer:          { name: 'Meer',           farbe: '#1a4a77', tempo: 0,    wasser: true },
-    flachesWasser: { name: 'Flaches Wasser', farbe: '#2f7fa8', tempo: 0,    wasser: true },
-    see:           { name: 'See',            farbe: '#2a6f9a', tempo: 0,    wasser: true },
-    fluss:         { name: 'Fluss',          farbe: '#3a86b0', tempo: 0.4 },
-    strand:        { name: 'Strand',         farbe: '#ddd0a3', tempo: 0.9 },
-    marsch:        { name: 'Marsch',         farbe: '#9aa86a', tempo: 0.6 },
-    steppe:        { name: 'Steppe',         farbe: '#cdc28a', tempo: 1.0 },
-    grasland:      { name: 'Grasland',       farbe: '#8fae5d', tempo: 1.0 },
-    sumpf:         { name: 'Sumpf',          farbe: '#5f7a4a', tempo: 0.45 },
-    buschland:     { name: 'Buschland',      farbe: '#a8a263', tempo: 0.8 },
-    laubwald:      { name: 'Laubwald',       farbe: '#4e7a3e', tempo: 0.7 },
-    nadelwald:     { name: 'Nadelwald',      farbe: '#2f5a3a', tempo: 0.65 },
-    bergwald:      { name: 'Bergwald',       farbe: '#3b5f44', tempo: 0.55 },
-    fels:          { name: 'Fels',           farbe: '#7c7a73', tempo: 0.5 },
-    geroell:       { name: 'Geröll',         farbe: '#908c84', tempo: 0.45 },
-    schnee:        { name: 'Schnee',         farbe: '#eef1f3', tempo: 0.35 },
-    gletscher:     { name: 'Gletscher',      farbe: '#d7e6ee', tempo: 0.3 }
+    tiefesMeer:    { name: 'Tiefes Meer',    farbe: '#102f52', wasser: true },
+    meer:          { name: 'Meer',           farbe: '#1a4a77', wasser: true },
+    flachesWasser: { name: 'Flaches Wasser', farbe: '#2f7fa8', wasser: true },
+    see:           { name: 'See',            farbe: '#2a6f9a', wasser: true },
+    fluss:         { name: 'Fluss',          farbe: '#3a86b0' },
+    strand:        { name: 'Strand',         farbe: '#ddd0a3' },
+    marsch:        { name: 'Marsch',         farbe: '#9aa86a' },
+    steppe:        { name: 'Steppe',         farbe: '#cdc28a' },
+    grasland:      { name: 'Grasland',       farbe: '#8fae5d' },
+    sumpf:         { name: 'Sumpf',          farbe: '#5f7a4a' },
+    buschland:     { name: 'Buschland',      farbe: '#a8a263' },
+    laubwald:      { name: 'Laubwald',       farbe: '#4e7a3e' },
+    nadelwald:     { name: 'Nadelwald',      farbe: '#2f5a3a' },
+    bergwald:      { name: 'Bergwald',       farbe: '#3b5f44' },
+    fels:          { name: 'Fels',           farbe: '#7c7a73' },
+    geroell:       { name: 'Geröll',         farbe: '#908c84' },
+    schnee:        { name: 'Schnee',         farbe: '#eef1f3' },
+    gletscher:     { name: 'Gletscher',      farbe: '#d7e6ee' }
   };
 
   // Reihenfolge fuer die Legende und fuer die Nummer im Uint8Array der Biomkarte.
@@ -64,6 +64,11 @@ TERRA.daten.biome = (function () {
   // Ab dieser Landhoehe zaehlt ein Feld zum Gebirge (fuer Regionen und Sichtweite).
   var gebirgeAb = 0.55;
 
+  /* Gischt am Ufer. Keine Biomart, nur eine Zeichenfarbe - deshalb steht sie
+   * weder in 'liste' noch in 'reihenfolge', sonst stuende "Schaum" als
+   * Landschaftsart in der Legende. */
+  var schaumFarbe = '#cfe6ec';
+
   // Nachschlagetabellen, einmal beim Laden gebaut.
   var nummerVon = {};
   var farbenRGB = {};
@@ -77,6 +82,12 @@ TERRA.daten.biome = (function () {
     ];
   });
 
+  var schaumRGB = [
+    parseInt(schaumFarbe.substr(1, 2), 16),
+    parseInt(schaumFarbe.substr(3, 2), 16),
+    parseInt(schaumFarbe.substr(5, 2), 16)
+  ];
+
   return {
     liste: liste,
     reihenfolge: reihenfolge,
@@ -86,6 +97,7 @@ TERRA.daten.biome = (function () {
     gebirgeAb: gebirgeAb,
     nummerVon: nummerVon,
     farbenRGB: farbenRGB,
+    schaumRGB: schaumRGB,
     idVonNummer: function (n) { return reihenfolge[n]; },
     info: function (n) { return liste[reihenfolge[n]]; }
   };

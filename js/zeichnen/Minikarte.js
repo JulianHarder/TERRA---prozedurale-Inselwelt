@@ -52,10 +52,6 @@ TERRA.Minikarte = (function () {
       ctx.lineWidth = 1;
       ctx.strokeRect(vx + 0.5, vy + 0.5, vb - 1, vh - 1);
     }
-
-    // Betrachter
-    ctx.fillStyle = '#ffd98a';
-    ctx.fillRect(Math.round(z.entdecker.x) - 1, Math.round(z.entdecker.y) - 1, 3, 3);
   }
 
   return { starten: starten, zeichnen: zeichnen, umschalten: umschalten };

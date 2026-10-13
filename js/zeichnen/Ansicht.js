@@ -5,12 +5,13 @@
  *
  *   Weltkoordinaten (Feld 0..255)  --Kamera-->  Bildschirmpunkte
  *
- * Die Kamera folgt dem Betrachter und wird am Weltrand angehalten. Ist die
- * Welt kleiner als das Fenster, wird sie mittig gesetzt.
+ * Die Kamera haengt am Blickpunkt (Zustand.blick), den man mit der Maus
+ * zieht, und wird am Weltrand angehalten. Ist die Welt kleiner als das
+ * Fenster, wird sie mittig gesetzt.
  *
  * Wichtig fuer die Bildrate: das Gelaende wird nur bei einer neuen Welt
  * erzeugt und danach nur noch als fertiges Bild verschoben. Pro Bild bleiben
- * ein drawImage, die Namen und ein Pfeil uebrig.
+ * ein drawImage und die Namen uebrig.
  */
 window.TERRA = window.TERRA || {};
 
@@ -76,37 +77,73 @@ TERRA.Ansicht = (function () {
 
   /* Hinein- oder herauszoomen. Rastet auf ganze Punkte ein - nach dem
    * Einpassen steht dort sonst eine Kommazahl, und die Karte wirkt beim
-   * Zoomen leicht unscharf. */
-  function zoomen(z, stufen) {
+   * Zoomen leicht unscharf.
+   *
+   * punkt ist die Stelle im Kartenrahmen, die stehen bleiben soll (das
+   * Mausrad gibt die Zeigerposition mit). Ohne punkt - also bei + und - auf
+   * der Tastatur - bleibt die Bildmitte stehen. */
+  function zoomen(z, stufen, punkt) {
     if (!z.welt) return;
     var jetzt = z.einstellungen.feldPixel;
     var neu = stufen > 0 ? Math.floor(jetzt) + stufen : Math.ceil(jetzt) + stufen;
     neu = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, neu));
     if (neu === jetzt) return;
+
+    if (punkt) blickNachziehen(z, punkt, jetzt, neu);
     z.einstellungen.feldPixel = neu;
     groesseAnpassen();
   }
 
-  /* Kamera auf den Betrachter ausrichten. */
+  /* Den Blick so verschieben, dass unter dem Zeiger dasselbe Feld liegen
+   * bleibt wie vor dem Zoom.
+   *
+   * Erst das Weltfeld unter dem Zeiger bestimmen, dann ausrechnen, wo die
+   * Bildmitte liegen muss, damit dieses Feld bei der neuen Feldgroesse
+   * wieder genau dort erscheint. Gerechnet wird aus z.blick heraus und nicht
+   * aus der zuletzt gezeichneten Kamera - sonst verrutscht es, wenn mehrere
+   * Raddrehungen in dasselbe Bild fallen. */
+  function blickNachziehen(z, punkt, alt, neu) {
+    var N = z.welt.groesse;
+    var breiteFelder = cssBreite / alt;
+    var hoeheFelder = cssHoehe / alt;
+
+    var kamX = geklemmt(z.blick.x, breiteFelder, N) - breiteFelder / 2;
+    var kamY = geklemmt(z.blick.y, hoeheFelder, N) - hoeheFelder / 2;
+
+    var feldX = kamX + punkt.x / alt;
+    var feldY = kamY + punkt.y / alt;
+
+    z.blick.x = feldX + (cssBreite / 2 - punkt.x) / neu;
+    z.blick.y = feldY + (cssHoehe / 2 - punkt.y) / neu;
+  }
+
+  /* Kamera aus dem Blickpunkt berechnen.
+   *
+   * Der Blick wird dabei in die Welt zurueckgeholt. Das muss hier passieren
+   * und nicht beim Ziehen: sonst wandert er weiter, waehrend die Karte schon
+   * am Rand steht, und man muss erst ein Stueck ins Leere zurueckziehen,
+   * bevor sich wieder etwas bewegt. */
   function kameraSetzen(z) {
     var N = z.welt.groesse;
     sicht.feldPixel = z.einstellungen.feldPixel;
     sicht.breiteFelder = cssBreite / sicht.feldPixel;
     sicht.hoeheFelder = cssHoehe / sicht.feldPixel;
 
-    var zx = z.entdecker.x - sicht.breiteFelder / 2;
-    var zy = z.entdecker.y - sicht.hoeheFelder / 2;
+    z.blick.x = geklemmt(z.blick.x, sicht.breiteFelder, N);
+    z.blick.y = geklemmt(z.blick.y, sicht.hoeheFelder, N);
 
-    if (sicht.breiteFelder >= N) zx = (N - sicht.breiteFelder) / 2;
-    else zx = Math.max(0, Math.min(N - sicht.breiteFelder, zx));
+    sicht.kamX = z.blick.x - sicht.breiteFelder / 2;
+    sicht.kamY = z.blick.y - sicht.hoeheFelder / 2;
+    z.kamera.x = sicht.kamX;
+    z.kamera.y = sicht.kamY;
+  }
 
-    if (sicht.hoeheFelder >= N) zy = (N - sicht.hoeheFelder) / 2;
-    else zy = Math.max(0, Math.min(N - sicht.hoeheFelder, zy));
-
-    sicht.kamX = zx;
-    sicht.kamY = zy;
-    z.kamera.x = zx;
-    z.kamera.y = zy;
+  /* Mittelpunkt so begrenzen, dass der Ausschnitt in der Welt bleibt.
+   * Passt die ganze Welt ins Fenster, steht sie mittig. */
+  function geklemmt(mitte, sichtFelder, N) {
+    if (sichtFelder >= N) return N / 2;
+    var halb = sichtFelder / 2;
+    return Math.max(halb, Math.min(N - halb, mitte));
   }
 
   /* Einen Weltausschnitt auf eine Ebene legen.
@@ -141,15 +178,6 @@ TERRA.Ansicht = (function () {
 
     ctx.oben.clearRect(0, 0, breite, hoehe);
     TERRA.Beschriftung.zeichnen(ctx.oben, z, sicht);
-    TERRA.FigurEbene.zeichnen(ctx.oben, z, sicht);
-  }
-
-  /* Bildschirmpunkt -> Weltfeld (fuer Klicks auf die Karte). */
-  function zuFeld(cssX, cssY) {
-    return {
-      x: sicht.kamX + cssX / sicht.feldPixel,
-      y: sicht.kamY + cssY / sicht.feldPixel
-    };
   }
 
   function daten() { return sicht; }
@@ -162,7 +190,6 @@ TERRA.Ansicht = (function () {
     zoomen: zoomen,
     zeichnen: zeichnen,
     groesseAnpassen: groesseAnpassen,
-    zuFeld: zuFeld,
     daten: daten,
     gelaende: gelaende
   };

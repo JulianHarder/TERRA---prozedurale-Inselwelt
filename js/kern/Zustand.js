@@ -30,18 +30,17 @@ TERRA.Zustand = (function () {
     einstellungen: null,
 
     kamera: { x: 0, y: 0 },
-    // Der Betrachter ist zugleich der Punkt, dem die Kamera folgt.
-    entdecker: { x: 0, y: 0, richtung: 0, ziel: null }
+    // Mitte des sichtbaren Ausschnitts, in Feldern. Ziehen mit der Maus und
+    // die Richtungstasten verschieben genau diesen Punkt.
+    blick: { x: 0, y: 0 }
   };
 
   /* Zustand auf eine neue Welt setzen. */
   function neueWelt(welt) {
     zustand.welt = welt;
     zustand.einstellungen = welt.einstellungen;
-    zustand.entdecker.x = welt.start.x + 0.5;
-    zustand.entdecker.y = welt.start.y + 0.5;
-    zustand.entdecker.richtung = 0;
-    zustand.entdecker.ziel = null;
+    zustand.blick.x = welt.groesse / 2;
+    zustand.blick.y = welt.groesse / 2;
     return zustand;
   }
 
@@ -49,7 +48,14 @@ TERRA.Zustand = (function () {
     var e = {};
     for (var k in standard) if (standard.hasOwnProperty(k)) e[k] = standard[k];
     if (ueberschreiben) {
-      for (var j in ueberschreiben) if (ueberschreiben.hasOwnProperty(j)) e[j] = ueberschreiben[j];
+      /* Nur bekannte Schluessel uebernehmen. Ein gespeicherter Stand kann aus
+       * einer aelteren Fassung stammen und Einstellungen enthalten, die es
+       * nicht mehr gibt - die sollen nicht ewig mitwandern. */
+      for (var j in standard) {
+        if (standard.hasOwnProperty(j) && ueberschreiben.hasOwnProperty(j)) {
+          e[j] = ueberschreiben[j];
+        }
+      }
     }
     return e;
   }

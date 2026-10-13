@@ -8,6 +8,11 @@
  * Welt eingepasst, waeren zwei Dutzend Namen auf engstem Raum unleserlich.
  * Also bekommt nur eine Beschriftung, wer auf dem Bildschirm auch Platz hat -
  * beim Hineinzoomen tauchen die kleineren Gebiete nach und nach auf.
+ *
+ * Geschrieben wird vom kleinsten Gebiet zum groessten. Wo sich zwei Namen
+ * ueberschneiden, liegt dadurch immer der groessere oben - der Inselname
+ * steht ueber dem Gebirgszug, nicht darunter. Weggelassen wird dabei nichts:
+ * beide Namen bleiben stehen.
  */
 window.TERRA = window.TERRA || {};
 
@@ -16,12 +21,17 @@ TERRA.Beschriftung = (function () {
 
   var MINDESTBREITE = 46;    // Bildpunkte, die ein Gebiet breit sein muss
 
+  // Die sortierte Liste gilt fuer die ganze Welt - sie wird einmal gebaut
+  // und nicht in jedem Bild neu.
+  var gemerkteWelt = null;
+  var gemerkteListe = null;
+
   function zeichnen(ctx, z, sicht) {
     if (!z.einstellungen.namen || !z.welt) return;
 
     var px = sicht.feldPixel * sicht.dpr;
     var arten = TERRA.daten.texte.arten;
-    var regionen = z.welt.inseln.concat(z.welt.merkmale);
+    var regionen = listeVon(z.welt);
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -68,6 +78,16 @@ TERRA.Beschriftung = (function () {
     }
 
     ctx.letterSpacing = '0px';
+  }
+
+  /* Alle benannten Gebiete, vom kleinsten zum groessten. */
+  function listeVon(welt) {
+    if (gemerkteWelt !== welt) {
+      gemerkteWelt = welt;
+      gemerkteListe = welt.inseln.concat(welt.merkmale);
+      gemerkteListe.sort(function (a, b) { return a.felder - b.felder; });
+    }
+    return gemerkteListe;
   }
 
   return { zeichnen: zeichnen, MINDESTBREITE: MINDESTBREITE };

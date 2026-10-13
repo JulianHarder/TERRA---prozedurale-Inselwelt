@@ -1,4 +1,4 @@
-/* Eingaben: Tastatur und Mausklick auf die Karte. */
+/* Eingaben: Tastatur und Ziehen der Karte mit der Maus. */
 window.TERRA = window.TERRA || {};
 
 TERRA.Tastatur = (function () {
@@ -74,26 +74,70 @@ TERRA.Tastatur = (function () {
       if (RICHTUNGEN[taste]) gedrueckt[taste] = false;
     });
 
-    // Fenster verlassen: alle Tasten loslassen, sonst laeuft die Figur weiter.
+    // Fenster verlassen: alle Tasten loslassen, sonst wandert die Karte weiter.
     window.addEventListener('blur', function () { gedrueckt = {}; });
 
     var rahmen = document.getElementById('karte-rahmen');
 
-    // Mausrad zoomt. passive:false, weil sonst die Seite mitscrollt.
+    // Mausrad zoomt auf die Stelle unter dem Zeiger.
+    // passive:false, weil sonst die Seite mitscrollt.
     rahmen.addEventListener('wheel', function (ereignis) {
       ereignis.preventDefault();
-      befehle.zoom(ereignis.deltaY < 0 ? 1 : -1);
+      var kasten = rahmen.getBoundingClientRect();
+      befehle.zoom(ereignis.deltaY < 0 ? 1 : -1, {
+        x: ereignis.clientX - kasten.left,
+        y: ereignis.clientY - kasten.top
+      });
     }, { passive: false });
 
-    rahmen.addEventListener('mousedown', function (ereignis) {
-      if (ereignis.button !== 0) return;
-      var kasten = rahmen.getBoundingClientRect();
-      var feld = TERRA.Ansicht.zuFeld(ereignis.clientX - kasten.left, ereignis.clientY - kasten.top);
-      befehle.klick(feld);
-    });
+    ziehenVerdrahten(rahmen, befehle);
   }
 
-  /* Aktuelle Laufrichtung aus den gedrueckten Tasten. */
+  /* Karte mit gedrueckter Maustaste ziehen.
+   *
+   * Zeiger- statt Maus-Ereignisse: damit zieht auch ein Finger auf dem
+   * Tablet. setPointerCapture laesst das Ziehen weiterlaufen, wenn der
+   * Zeiger den Rahmen verlaesst - sonst bleibt die Karte haengen, sobald man
+   * ueber die Seitenleiste hinauszieht, und bleibt danach am Zeiger kleben,
+   * weil das Loslassen nie ankommt. */
+  function ziehenVerdrahten(rahmen, befehle) {
+    var zieht = false, zeigerNr = null, letztesX = 0, letztesY = 0;
+
+    rahmen.addEventListener('pointerdown', function (ereignis) {
+      if (ereignis.button !== 0) return;
+      zieht = true;
+      zeigerNr = ereignis.pointerId;
+      letztesX = ereignis.clientX;
+      letztesY = ereignis.clientY;
+      rahmen.classList.add('zieht');
+      if (rahmen.setPointerCapture) rahmen.setPointerCapture(zeigerNr);
+      ereignis.preventDefault();          // nichts markieren beim Ziehen
+    });
+
+    rahmen.addEventListener('pointermove', function (ereignis) {
+      if (!zieht || ereignis.pointerId !== zeigerNr) return;
+      befehle.ziehen(ereignis.clientX - letztesX, ereignis.clientY - letztesY);
+      letztesX = ereignis.clientX;
+      letztesY = ereignis.clientY;
+    });
+
+    function loslassen(ereignis) {
+      if (!zieht) return;
+      if (ereignis && ereignis.pointerId !== zeigerNr) return;
+      if (zeigerNr !== null && rahmen.releasePointerCapture) {
+        try { rahmen.releasePointerCapture(zeigerNr); } catch (fehler) { /* schon weg */ }
+      }
+      zieht = false;
+      zeigerNr = null;
+      rahmen.classList.remove('zieht');
+    }
+
+    rahmen.addEventListener('pointerup', loslassen);
+    rahmen.addEventListener('pointercancel', loslassen);
+    window.addEventListener('blur', function () { loslassen(null); });
+  }
+
+  /* Aktuelle Richtung aus den gedrueckten Tasten. */
   function richtung() {
     eingabe.x = 0;
     eingabe.y = 0;

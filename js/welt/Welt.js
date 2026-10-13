@@ -53,7 +53,6 @@ TERRA.Welt = (function () {
     };
 
     welt.landFelder = zaehleLand(hoehe, e.meeresspiegel);
-    welt.start = startfeldFinden(welt);
     welt.dauerMs = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - beginn;
     return welt;
   }
@@ -64,45 +63,5 @@ TERRA.Welt = (function () {
     return n;
   }
 
-  /* Wo faengt der Entdecker an?
-   *
-   * Auf der groessten Insel, moeglichst nah an deren Schwerpunkt, und lieber
-   * auf Grasland als im Gebirge. Hochgebirge und Wasser sind ausgeschlossen -
-   * es waere unschoen, eingeklemmt zwischen Felswaenden zu starten.
-   */
-  function startfeldFinden(welt) {
-    var N = welt.groesse;
-    var d = TERRA.daten.biome;
-
-    if (!welt.inseln.length) {
-      // Welt ohne nennenswertes Land (extreme Reglerstellung): irgendein Landfeld.
-      for (var k = 0; k < welt.hoehe.length; k++) {
-        if (TERRA.Biome.tempo(welt.biom[k]) > 0) return { x: k % N, y: Math.floor(k / N) };
-      }
-      return { x: Math.floor(N / 2), y: Math.floor(N / 2) };
-    }
-
-    var insel = welt.inseln[0];
-    var ziel = insel.mitte;
-    var bestes = -1, besteNote = -Infinity;
-
-    for (var i = 0; i < welt.inselVon.length; i++) {
-      if (welt.inselVon[i] !== insel.nummer) continue;
-      var tempo = TERRA.Biome.tempo(welt.biom[i]);
-      if (tempo <= 0.4) continue;
-
-      var x = i % N, y = (i - (i % N)) / N;
-      var abstand = Math.sqrt((x - ziel.x) * (x - ziel.x) + (y - ziel.y) * (y - ziel.y));
-      var id = d.idVonNummer(welt.biom[i]);
-      var bonus = (id === 'grasland' || id === 'steppe') ? 14 : (id === 'strand' ? 6 : 0);
-      var note = bonus - abstand;
-
-      if (note > besteNote) { besteNote = note; bestes = i; }
-    }
-
-    if (bestes < 0) return { x: ziel.x, y: ziel.y };
-    return { x: bestes % N, y: Math.floor(bestes / N) };
-  }
-
-  return { erzeuge: erzeuge, startfeldFinden: startfeldFinden };
+  return { erzeuge: erzeuge };
 })();

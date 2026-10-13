@@ -15,7 +15,6 @@ TERRA.daten.texte = {
   },
 
   erzeugen:    'Welt wird erzeugt …',
-  gesperrt:    'Dort kommst du nicht weiter.',
 
   // Woerter fuer den Zufalls-Seed-Knopf
   zufallsWoerter: [
